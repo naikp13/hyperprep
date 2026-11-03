@@ -1,0 +1,10 @@
+# EnMAP L2A surface reflectance -> analysis-ready cube
+input: /path/to/ENMAP01-____L2A-DT0000012345_20230601T101010Z_001_V010303_20230602T000000Z
+steps:
+  - read: {sensor: enmap}
+  - reflectance_scale_check: {}
+  - subset_bbox: {bbox: [500000, 5300000, 520000, 5320000]}
+  - mask_clouds: {buffer: 2}
+  - remove_bad_bands: {}
+  - savgol: {window: 5}
+output: /path/to/out/enmap_l2a_clean.tif

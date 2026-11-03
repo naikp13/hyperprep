@@ -1,0 +1,13 @@
+# Generic white/dark referencing for any frame or pushbroom scanner in ENVI format (no hylite needed)
+input: /path/to/raw_scan.hdr
+steps:
+  - read: {}
+  - white_reference:
+      white: /path/to/WHITEREF.hdr
+      dark: /path/to/DARKREF.hdr
+      panel_reflectance: 0.99
+  - repair_bad_pixels: {z_thresh: 6}
+  - destripe: {method: ratio, window: 25}
+  - remove_bad_bands: {}
+  - savgol: {window: 7}
+output: /path/to/out/scan_refl.hdr

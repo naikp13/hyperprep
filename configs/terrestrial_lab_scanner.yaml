@@ -1,0 +1,13 @@
+# Lab / core-scanner reflectance (hylite sensor corrections) + spectral clean-up
+steps:
+  - sensor_correction:
+      path: /path/to/capture_folder
+      sensor: fx50            # fenix | fx10 | fx17 | fx50 | owl | rikola | telops
+      white_panel: R90
+      bpr: true
+      flip: false
+  - remove_bad_bands: {preset: default}
+  - remove_spikes: {z_thresh: 5}
+  - savgol: {window: 7, polyorder: 2}
+  - clip_range: {vmin: 0.0, vmax: 1.5, action: nan_pixel}
+output: /path/to/out/core_refl.hdr

@@ -1,0 +1,11 @@
+# PRISMA L1 radiance (raw geometry) -> smile/stripe corrected TOA reflectance
+input: /path/to/PRS_L1_STD_OFFL_20220101101010_20220101101014_0001.he5
+steps:
+  - read: {sensor: prisma}
+  - smile_correction: {feature: [745, 780], degree: 2}
+  - destripe: {method: ratio, window: 31}
+  - toa_reflectance: {radiance_scale: 0.001}   # PRISMA L1: W m-2 sr-1 um-1 -> W m-2 sr-1 nm-1
+  - dos: {}
+  - remove_bad_bands: {}
+  - savgol: {window: 5}
+output: /path/to/out/prisma_toa_refl.hdr

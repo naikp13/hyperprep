@@ -1,0 +1,23 @@
+# Drone / airborne pushbroom (e.g. HySpex Mjolnir, Specim AFX, Headwall Nano) - radiance to orthorectified reflectance
+input: /path/to/line_01_raw_rad.hdr
+steps:
+  - read: {}
+  - hyspex_scale: {}                     # HySpex RAD integer scaling (remove for other sensors)
+  - mask_nodata: {nodata_value: 0}
+  - repair_bad_pixels: {z_thresh: 6}
+  - destripe: {method: ratio, window: 31}
+  - elc:                                 # calibration targets visible in the line (row0, row1, col0, col1)
+      panels:
+        - {name: white, region: [1200, 1220, 400, 420], reflectance: 0.9}
+        - {name: black, region: [1200, 1220, 440, 460], reflectance: 0.05}
+  - cross_track_correction: {degree: 2, ifov_deg: 0.0309}
+  - remove_bad_bands: {}
+  - savgol: {window: 7}
+  - orthorectify:
+      nav: /path/to/HyspexNav_Results/line_01.txt   # frame lon lat z roll pitch yaw time
+      ifov_deg: 0.0309                              # 0.54 mrad
+      res: 0.1
+      dem: /path/to/dem_utm.tif                     # or ground: <height>
+      boresight: [0.256, 0.243, -0.020]             # from projection-mapping boresight solve
+      lever_arm: [0.0, 0.0, 0.1]                    # forward, right, down (m)
+output: /path/to/out/line_01_refl_ortho.hdr

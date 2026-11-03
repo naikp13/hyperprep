@@ -1,0 +1,14 @@
+# EMIT L1B radiance -> orthorectified TOA reflectance with simple haze removal and masks
+input: /path/to/EMIT_L1B_RAD_001_20230801T100000_2321307_005.nc
+steps:
+  - read: {sensor: emit, ortho: true}
+  - toa_reflectance:
+      sun_zenith: 32.5             # from the EMIT OBS product
+      radiance_scale: 0.01         # uW cm-2 sr-1 nm-1 -> W m-2 sr-1 nm-1
+      esun_path: null              # recommended: 2-column TSIS-1 / Thuillier solar spectrum
+  - dos: {percentile: 0.1}
+  - mask_clouds: {buffer: 3}
+  - mask_water: {}
+  - remove_bad_bands: {}
+  - savgol: {window: 5}
+output: /path/to/out/emit_toa_refl.hdr
